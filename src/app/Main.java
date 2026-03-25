@@ -1,19 +1,21 @@
 package app;
 
-import model.Player;
-import model.Move;
-import model.GameState;
+import exception.InvalidMoveException;
+import exception.GameOverException;
 
 public class Main {
     public static void main(String[] args) {
 
-        Player p1 = new Player(1, "Subham", 'X');
-        Player p2 = new Player(2, "Ritisha", 'O');
+        try {
+            throw new InvalidMoveException("Invalid move test");
+        } catch (InvalidMoveException e) {
+            System.out.println("Caught Exception: " + e.getMessage());
+        }
 
-        Move move = new Move(p1, 0, 1);
-
-        System.out.println("Player: " + p1);
-        System.out.println("Move: Row " + move.getRow() + ", Col " + move.getCol());
-        System.out.println("Game State: " + GameState.ONGOING);
+        try {
+            throw new GameOverException("Game over test");
+        } catch (GameOverException e) {
+            System.out.println("Caught Exception: " + e.getMessage());
+        }
     }
 }

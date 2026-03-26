@@ -23,10 +23,17 @@ public class TicTacToeGame extends Game {
         int row = move.getRow();
         int col = move.getCol();
 
+        // ✅ ADD THIS HERE (FIRST CHECK)
+        if (row < 0 || row >= 3 || col < 0 || col >= 3) {
+            throw new InvalidMoveException("Invalid position! Enter values between 0 and 2.");
+        }
+
+        // ✅ EXISTING CHECK
         if (!board.isCellEmpty(row, col)) {
             throw new InvalidMoveException("Cell already occupied!");
         }
 
+        // PLACE MOVE
         board.placeMove(row, col, move.getPlayer().getSymbol());
         board.printBoard();
     }

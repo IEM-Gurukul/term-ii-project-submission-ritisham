@@ -27,20 +27,20 @@ public class TicTacToeGame extends Game {
         int row = move.getRow();
         int col = move.getCol();
 
-        // ✅ Boundary check
+        // Boundary check
         if (row < 0 || row >= 3 || col < 0 || col >= 3) {
             throw new InvalidMoveException("Invalid position! Enter values between 0 and 2.");
         }
 
-        // ✅ Check if cell is empty
+        // Check if cell is empty
         if (!board.isCellEmpty(row, col)) {
             throw new InvalidMoveException("Cell already occupied!");
         }
 
-        // ✅ Place move
+        // Place move
         board.placeMove(row, col, move.getPlayer().getSymbol());
 
-        // ✅ Print board after move
+        // Print board after move
         board.printBoard();
     }
 
@@ -52,6 +52,24 @@ public class TicTacToeGame extends Game {
         if (winnerPlayer != null) {
             gameState = GameState.WIN;
             winner = winnerPlayer;
+            return;
         }
+
+        if (isBoardFull()) {
+            gameState = GameState.DRAW;
+            return;
+        }
+    }
+    private boolean isBoardFull() {
+        char[][] grid = board.getGrid();
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (grid[i][j] == '-') {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 }

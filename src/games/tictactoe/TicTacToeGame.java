@@ -5,16 +5,20 @@ import exception.InvalidMoveException;
 import model.Move;
 import model.Player;
 import model.GameState;
+import strategy.WinStrategy;
+import strategy.TicTacToeWinStrategy;
 
 import java.util.List;
 
 public class TicTacToeGame extends Game {
 
     private Board board;
+    private WinStrategy winStrategy;
 
     public TicTacToeGame(List<Player> players) {
         super(players);
         this.board = new Board(3);
+        this.winStrategy = new TicTacToeWinStrategy(players);
     }
 
     @Override
@@ -23,75 +27,31 @@ public class TicTacToeGame extends Game {
         int row = move.getRow();
         int col = move.getCol();
 
-        // ✅ ADD THIS HERE (FIRST CHECK)
+        // ✅ Boundary check
         if (row < 0 || row >= 3 || col < 0 || col >= 3) {
             throw new InvalidMoveException("Invalid position! Enter values between 0 and 2.");
         }
 
-        // ✅ EXISTING CHECK
+        // ✅ Check if cell is empty
         if (!board.isCellEmpty(row, col)) {
             throw new InvalidMoveException("Cell already occupied!");
         }
 
-        // PLACE MOVE
+        // ✅ Place move
         board.placeMove(row, col, move.getPlayer().getSymbol());
+
+        // ✅ Print board after move
         board.printBoard();
     }
 
     @Override
     public void checkWinner() {
 
-        char[][] grid = board.getGrid();
+        Player winnerPlayer = winStrategy.checkWinner(board.getGrid());
 
-        // Check rows
-        for (int i = 0; i < 3; i++) {
-            if (grid[i][0] != '-' &&
-                    grid[i][0] == grid[i][1] &&
-                    grid[i][1] == grid[i][2]) {
-
-                gameState = GameState.WIN;
-                winner = findPlayerBySymbol(grid[i][0]);
-                return;
-            }
-        }
-
-        // Check columns
-        for (int j = 0; j < 3; j++) {
-            if (grid[0][j] != '-' &&
-                    grid[0][j] == grid[1][j] &&
-                    grid[1][j] == grid[2][j]) {
-
-                gameState = GameState.WIN;
-                winner = findPlayerBySymbol(grid[0][j]);
-                return;
-            }
-        }
-
-        // Check diagonals
-        if (grid[0][0] != '-' &&
-                grid[0][0] == grid[1][1] &&
-                grid[1][1] == grid[2][2]) {
-
+        if (winnerPlayer != null) {
             gameState = GameState.WIN;
-            winner = findPlayerBySymbol(grid[0][0]);
-            return;
+            winner = winnerPlayer;
         }
-
-        if (grid[0][2] != '-' &&
-                grid[0][2] == grid[1][1] &&
-                grid[1][1] == grid[2][0]) {
-
-            gameState = GameState.WIN;
-            winner = findPlayerBySymbol(grid[0][2]);
-        }
-    }
-
-    private Player findPlayerBySymbol(char symbol) {
-        for (Player p : players) {
-            if (p.getSymbol() == symbol) {
-                return p;
-            }
-        }
-        return null;
     }
 }
